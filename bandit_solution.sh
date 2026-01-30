@@ -4,6 +4,7 @@
 
 parser_b64=`base64 -w0 parse.sh`
 l23_script_b64=`base64 -w0 level23.sh`
+pincode_script_b64=`base64 -w0 pincode.sh`
 
 
 level_cmd=("cat readme | grep \"password\" | cut -d \":\" -f 2 | tr -d \" \"" \
@@ -30,6 +31,8 @@ level_cmd=("cat readme | grep \"password\" | cut -d \":\" -f 2 | tr -d \" \"" \
 	   "cat /usr/bin/cronjob_bandit22.sh | tail -n1 | cut -d\">\" -f2 | xargs cat" \
 	   "cat /tmp/`echo I am user bandit23 | md5sum | cut -d\" \" -f 1`" \
 	   "cd /var/spool/bandit24/foo; echo '$l23_script_b64' | base64 -d > my-scrp.sh; chmod 777 my-scrp.sh; sleep 10; cat /tmp/my-scrp/pass" \
+	   "mkdir -p /tmp/passcode; cd /tmp/passcode; echo '$pincode_script_b64' | base64 -d > pin.sh; chmod 777 pin.sh; \./pin.sh | nc localhost 30002 | grep \"The password\" | cut -d\" \" -f7" \
+	   #"cat bandit26.sshkey" \
           )
 levels_len=${#level_cmd[@]}
 level=0
@@ -41,7 +44,7 @@ for cmd in "${level_cmd[@]}"; do
 	fi
 
 	# Debug ------------------------------------------
-	if [ "$level" -lt "15" ]; then
+	if [ "$level" -lt "20" ]; then
        		 ((level+=1))
 		 continue
 	fi
