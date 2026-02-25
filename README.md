@@ -33,7 +33,37 @@ For this level we have a file data.txt in the home directory, which contanis lar
 For this level we have a file data.txt in the home directory, which contains large amount of lines of text. The password for the next level is the only line of text that occurs only once. So we can use the uniq utility which filters adjacent matching lines from a text file or standard input. But the text lines are not adjacent so it wont work properly. Wecan use sort utility which arranges lines of text in a specific order. After arranging the text lines we can use the "-u" flag on uniq command to print out the no repeating line text. This way we get the password for the next level.
 
 ## Level 9 -> 10
-For this level we have a file data.txt in the home directory, which contains large amount of text which only few human-readavle strings. The password of the next level is preceded by several ‘=’ characters. So we used grep utility to search text with multiple '=' characters. Here we used regex to filter the file and after getting the text we transformed it to just get the password string.
+For this level we have a file data.txt in the home directory, which contains large amount of text which only few human-readavle strings. The password of the next level is preceded by several ‘=’ characters. So we first read the binary file with strings utility which prints printable characters and used grep utility to search text with multiple '=' characters. Here we used regex to filter the file and after getting the text we transformed it to just get the password string.
 
 ## Level 10 -> 11
 For this level we have a file data.txt in the home directory, which contains base64 encoded data. Base-64 is a encoding method where the data(binary) is encoded by mapping it to 64 printable characters. On unix/linux system we have utility "base64" which encodes/decodes binary/base64-encoded files respectively. Using the "-d" flag we decode the file and read the password content in the file.
+
+## Level 11 -> 12
+For this level we have a file data.txt in the home directory which contains strings that are rotated 13 positions for alphabetic characters. rotating 13 positions basically is chnaging a/A to m/M, b/B to n/N and so forth. So we are using tr utility to translate the chacaters back from m/M to a/A as an example. We are reversing the albhabetic string which gives the decoded text and we get the password for the nect level.
+
+## Level 12 -> 13
+For this level we have a file data.txt in the home directory which contains hexdump of a file that has been repeatedly compressed. So as we need to automate the decompression of the file that has been repatedily compressed, I have used a script called parse.sh which runs the decompression in loop until it gets the text file. As the file could be compressed in different formats(gzip, bzip2 or tar), we check the file format and decompress the file in loop. As the file is a hexdump, we convert the hexdump to binary format with xxd utility. Now we have the parser script, we pass the file to the remote shell by converting it to base64 and convert it back to the script and put it in a directory somewhere in tmp. After we pass the file to the script as argument we can get the password to the next level.
+
+## Level 13 -> 14
+For this level we get the private ssh key for next level in the home directory, with which we can simply login to the remote server to that level and get the password stored in "/etc/bandit_pass/bandit{level}".
+
+## Level 14 -> 15
+For this level we have to listen to the server running on localhost on port 3000 and by passing the password of this level to the server it outputs the password to the next level. Here we use nc networking utility used for reading from and writing to network connections. By passing the password of the current level to stdin of the server we get the password as stdout printed.
+
+## Level 15 -> 16
+For this level to retrive the password of the next level its similar to the previous level but with a added secutity SSL/TLS encryption layer on the server. For this we use ncat utility with the "--ssl" flag. This flag allows SSL/TLS encryption this allows ncat to act as an SSL client. So doing this and sending the password of this level to the server gives back the password for the next level.
+
+## Level 16 -> 17
+For this level the password for the next level can be retrieved by submitting the password of the current level to a port on localhost in the range 31000 to 32000. The connection is also SSL/TLS encrypted. First we use nmap utility which is used to scan and identify active ports. we provide the range to scan with the "-p" flag. Now after getting open tcp ports we loop it on socat utility which with the OPENSSL option encrypts the connection and with verify=0 option we are not rejected by the server for self-signed certificates. So one of the port gives the password to the next level this way.
+
+## Level 17 -> 18
+For this level the password is stored somewhere in password.new file but we have another file password.old which contains exectly the same content to password.new the only change is the password line/string only. So we use diff utility which compare the contents of two files line by line. Comparing these two files we get the password to the next level on the line different on the password.new file.
+
+## Level 18 -> 19
+The password for the next level is stored on a file readme in home directory, but the only problem is the .bashrc is modified to log us out when we log in with SSH. But we dont have any problem accessing this file as we use commands as argument on the remote shell using ssh which gives us the next password.
+
+## Level 19 -> 20
+For this level we have a setuid binary file on the home directory. Setuid is a previleged permission of the program/file owner when executing it. Now the file owner is the user of the next level so passing argument of a file it reads the content of that file. We have passwords for every level on /etc/bandit_pass with password files with permissions to that specific level users. So we can use the setuid program and read the password of the next level with this uplifted previlage.
+
+## Level 20 -> 21
+For this level we have another setuid binary program that makes connection to localhost on the port you specify as a argument. It on reading line of text from the connection compares it to the current level password and on match gives password to the next level. So we first establist a connection with a specific port with the nc utility and sent the current password which will run on background. We then listen to the connection with our setuid program. This way the program outputs the password for the next level.
