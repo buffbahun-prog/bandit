@@ -67,3 +67,15 @@ For this level we have a setuid binary file on the home directory. Setuid is a p
 
 ## Level 20 -> 21
 For this level we have another setuid binary program that makes connection to localhost on the port you specify as a argument. It on reading line of text from the connection compares it to the current level password and on match gives password to the next level. So we first establist a connection with a specific port with the nc utility and sent the current password which will run on background. We then listen to the connection with our setuid program. This way the program outputs the password for the next level.
+
+## Level 21 -> 22
+For this level a program is running automatically at regular intervals from cron, the time-based job scheduler. Looking at /etc/corn.d for the command running on cron we see a script at path /usr/bin/cornjob_bandit22.sh, we can get the password for the next level on the scriptcontent.
+
+## Level 22 -> 23
+For this level which is quite similar to the previous one, with cron job running on regular interval, and looking on the content of the script that is running from the cron, we see the script is storing the password on a file within tmp directory with a file name which is a hash of string 'I am user bandit23'. Now using this path we can access the password for the next level.
+
+## Level 23 -> 24
+For this level as with the previous levels with cron job, looking on the content of the script that is running from te cron, we see the script is running other scripts present in /var/spool/bandit24/foo with the previlage of user bandit24. So we create a script which creates a file in tmp that gets the password of next level from the /etc/bandit_pass/bandit24(has bandit24 read access). And when the cron job running the previlaged script which in-trun runs our script which copies the password content of next level we get the password for the next level.
+
+## Level 24 -> 25
+For this level we have a deamon which is listening on port 30002 and will give us the password for bandit25 if given the password for bandit24 and a secret numeric 4-digit pincode. A deamon is just a program runing in background. So we create a script which outputs the given passcode 'bandit24_password<space>4_digit_pincode' one at a time. And runing this script on the remote server and redirecting the output on the server we get the password for next level eith brute force.
